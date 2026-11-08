@@ -16,3 +16,7 @@ cmake-build-*/
 *.so
 *.dylib
 *.dll
+
+
+.DS_Store
+.vscode/
