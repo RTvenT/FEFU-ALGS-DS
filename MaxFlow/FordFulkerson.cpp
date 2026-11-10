@@ -18,21 +18,20 @@ private:
     vector<vector<Edge>> graph;
 
     ll dfs(int v, int t, ll pushed, vector<bool>& visited) {
-        // TODO 1: Условие достижения стока
         if (v == t) return pushed;
 
-        // TODO 2: Пометить вершину как посещённую
         visited[v] = true;
 
-        // TODO 3: Перебрать исходящие остаточные рёбра
         for (Edge& edge: graph[v]) {
-            // TODO 4: Проверить возможность перехода
             if (!visited[edge.to] && edge.cap > 0) {
-                // TODO 5: Рекурсивно найти увеличивающий путь
                 ll max_pushed = dfs(edge.to, t, min(pushed, edge.cap), visited);
-                // TODO 6: Обновить прямое и обратное рёбра
+                
+                //cout << v << ": " << max_pushed << '\n';
+          
                 edge.cap -= max_pushed;
                 graph[edge.to][edge.rev].cap += max_pushed;
+
+                if (max_pushed != 0) return max_pushed;
             }
         }
 
@@ -47,23 +46,23 @@ public:
         if (u == v) return;
 
         Edge edge{v, (int)graph[v].size(), cap};
-        Edge rev{u, (int)graph[u].size()-1, 0};
-        
         graph[u].push_back(edge);
-        graph[v].push_back(edge);
+        
+        Edge rev{u, (int)graph[u].size()-1, 0};
+        graph[v].push_back(rev);
     }
 
     ll max_flow(int s, int t) {
-        // TODO 1: Инициализировать величина потока
+        if (s == t) return 0;
+
         ll f = 0;
 
-        // TODO 2: Запускать DFS, пока
-        //          существуют увеличивающие пути
         while (true) {
             vector<bool> visited(n);
-            ll add_flow =  dfs(s, t, 0, visited);
+            ll add_flow =  dfs(s, t, INF, visited);
+            // cout << add_flow << '\n';
+            if (add_flow == 0) break;
 
-            // TODO 3: Суммировать найденные увеличения
             f += add_flow;
         }
 
